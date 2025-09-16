@@ -39,6 +39,13 @@ print("🚪 输入 'exit' 或 'quit' 可退出程序\n")
 # 调试模式开关 - 设置为True可查看AI完整思考过程
 DEBUG_MODE = 1
 
+# 设置Tcl/Tk环境变量（解决pyenv安装的Python Tcl路径问题）
+import os
+
+python_home = r"C:\Users\a1387\.pyenv\pyenv-win\versions\3.13.0"
+os.environ["TCL_LIBRARY"] = os.path.join(python_home, "tcl", "tcl8.6")
+os.environ["TK_LIBRARY"] = os.path.join(python_home, "tcl", "tk8.6")
+
 # 初始化COM环境
 pythoncom.CoInitialize()
 try:
