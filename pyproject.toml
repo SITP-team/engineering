@@ -1,20 +1,17 @@
-[project]
+[tool.poetry]
 name = "engineering"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "bruce123-wer",email = "3224507089@qq.com"}
-]
+authors = ["bruce123-wer <3224507089@qq.com>"]
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    "requests (>=2.32.5,<3.0.0)",
-    "pywin32 (>=311,<312)"
-]
+packages = [{ include = "engineering", from = "src" }]
 
-[tool.poetry]
-packages = [{include = "engineering", from = "src"}]
-
+[tool.poetry.dependencies]
+python = ">=3.13"
+requests = ">=2.32.5"
+pywin32 = ">=308"
+matplotlib = ">=3.8.0"
+networkx = ">=3.2.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
