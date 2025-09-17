@@ -1,16 +1,30 @@
 # 路径配置文件
+import os
+
+# 获取项目根目录
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 
 # 模型模板文件路径
-MODEL_FILE = r"C:\SITP\大语言模型建模\engineering\src\config\test2.spp"
+MODEL_FILE = os.path.join(PROJECT_ROOT, "src", "config", "test2.spp")
 
 # 生成的模型保存路径（保存到result目录）
-SAVED_MODEL_FILE = r"C:\SITP\大语言模型建模\engineering\src\result\saved.spp"
+SAVED_MODEL_FILE = os.path.join(PROJECT_ROOT, "src", "result", "saved.spp")
 
 # 数据输出文件路径（保存到result目录）
-DATA_OUTPUT_FILE = r"C:\SITP\大语言模型建模\engineering\src\result\data_output.txt"
+DATA_OUTPUT_FILE = os.path.join(PROJECT_ROOT, "src", "result", "data_output.txt")
 
 # 默认生产线配置文件路径
-DEFAULT_PRODUCTION_LINE_FILE = r"C:\SITP\大语言模型建模\engineering\src\core\optimization\default_production_line.json"
+DEFAULT_PRODUCTION_LINE_FILE = os.path.join(
+    PROJECT_ROOT, "src", "core", "optimization", "default_production_line.json"
+)
+
+# 文档文件路径
+BACKGROUND_DOCUMENT_FILE = os.path.join(
+    PROJECT_ROOT, "src", "docs", "background document.md"
+)
+SAMPLE_LIBRARY_FILE = os.path.join(PROJECT_ROOT, "src", "docs", "sample library.md")
 
 """
 个人配置文件

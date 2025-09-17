@@ -6,6 +6,7 @@ import json
 import os
 from typing import Dict, List, Optional
 from dataclasses import dataclass
+from src.config.path_config import BACKGROUND_DOCUMENT_FILE, SAMPLE_LIBRARY_FILE
 
 
 @dataclass
@@ -27,8 +28,8 @@ class DynamicPromptGenerator:
 
     def __init__(
         self,
-        background_doc_path: str = "src/docs/background document.md",
-        sample_lib_path: str = "src/docs/sample library.md",
+        background_doc_path: str = BACKGROUND_DOCUMENT_FILE,
+        sample_lib_path: str = SAMPLE_LIBRARY_FILE,
     ):
         self.background_modules = self._parse_background_document(background_doc_path)
         self.sample_library = self._parse_sample_library(sample_lib_path)
