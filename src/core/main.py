@@ -39,12 +39,50 @@ print("🚪 输入 'exit' 或 'quit' 可退出程序\n")
 # 调试模式开关 - 设置为True可查看AI完整思考过程
 DEBUG_MODE = 1
 
-# 设置Tcl/Tk环境变量（解决pyenv安装的Python Tcl路径问题）
+# 自动设置Tcl/Tk环境变量（兼容不同环境的通用解决方案）
 import os
+import sys
 
-python_home = r"C:\Users\a1387\.pyenv\pyenv-win\versions\3.13.0"
-os.environ["TCL_LIBRARY"] = os.path.join(python_home, "tcl", "tcl8.6")
-os.environ["TK_LIBRARY"] = os.path.join(python_home, "tcl", "tk8.6")
+def setup_tkinter_environment():
+    """自动设置Tcl/Tk环境变量，兼容虚拟环境和系统Python"""
+    
+    # 可能的Tcl/Tk路径列表（按优先级排序）
+    possible_paths = [
+        # 1. 虚拟环境中的Tcl路径（如果存在）
+        os.path.join(sys.prefix, "tcl"),
+        # 2. 系统Python的Tcl路径
+        os.path.join(sys.base_prefix, "tcl"),
+        # 3. 常见的Python安装路径
+        os.path.join(os.path.dirname(sys.executable), "..", "tcl"),
+        os.path.join(os.path.dirname(sys.executable), "tcl"),
+    ]
+    
+    # 查找可用的Tcl/Tk路径
+    tcl_path = None
+    tk_path = None
+    
+    for base_path in possible_paths:
+        base_path = os.path.abspath(base_path)
+        test_tcl_path = os.path.join(base_path, "tcl8.6")
+        test_tk_path = os.path.join(base_path, "tk8.6")
+        
+        if os.path.exists(test_tcl_path) and os.path.exists(test_tk_path):
+            tcl_path = test_tcl_path
+            tk_path = test_tk_path
+            break
+    
+    # 设置环境变量
+    if tcl_path and tk_path:
+        os.environ["TCL_LIBRARY"] = tcl_path
+        os.environ["TK_LIBRARY"] = tk_path
+        if DEBUG_MODE:
+            print(f"✅ Tcl/Tk环境变量已自动设置: {tcl_path}")
+    else:
+        print("⚠️  警告：无法自动找到Tcl/Tk库路径，图形界面可能无法正常工作")
+        print("   请确保Python安装包含完整的Tcl/Tk运行时库")
+
+# 执行环境设置
+setup_tkinter_environment()
 
 # 初始化COM环境
 pythoncom.CoInitialize()
