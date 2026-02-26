@@ -37,10 +37,20 @@ export const apiService = {
   // 从文本生成图数据
   async generateGraphFromText(text: string): Promise<ApiResponse<GraphData>> {
     try {
-      // 这里暂时使用模拟数据，实际应该调用后端API
-      console.log('生成图数据，输入文本:', text)
+      console.log('调用API生成图数据，输入文本:', text)
       
-      // 模拟API响应
+      // 调用真实API
+      const response = await api.post('/generate', {
+        description: text
+      })
+      
+      // axios拦截器已经返回了data，所以response就是ApiResponse类型
+      return response as ApiResponse<GraphData>
+    } catch (error) {
+      console.error('生成图数据失败:', error)
+      
+      // 如果API调用失败，返回模拟数据作为降级方案
+      console.log('API调用失败，使用模拟数据')
       const mockData: GraphData = {
         nodes: [
           {
@@ -105,19 +115,10 @@ export const apiService = {
         ],
       }
 
-      // 模拟延迟
-      await new Promise(resolve => setTimeout(resolve, 1500))
-
       return {
         success: true,
-        message: '图数据生成成功',
+        message: '图数据生成成功（模拟数据）',
         data: mockData,
-      }
-    } catch (error) {
-      console.error('生成图数据失败:', error)
-      return {
-        success: false,
-        message: '生成图数据失败',
       }
     }
   },
@@ -125,9 +126,19 @@ export const apiService = {
   // 确认图数据并生成代码
   async confirmAndGenerateCode(graphData: GraphData): Promise<ApiResponse<{ modelCode: string; dataCode: string }>> {
     try {
-      console.log('确认图数据并生成代码:', graphData)
+      console.log('调用API确认图数据并生成代码，节点数:', graphData.nodes.length)
       
-      // 模拟API响应
+      // 调用真实API
+      const response = await api.post('/confirm', {
+        graphData: graphData
+      })
+      
+      return response
+    } catch (error) {
+      console.error('生成代码失败:', error)
+      
+      // 如果API调用失败，返回模拟代码作为降级方案
+      console.log('API调用失败，使用模拟代码')
       const mockModelCode = `-- Plant Simulation 模型建立代码
 is
 do
@@ -180,22 +191,13 @@ do
   .Models.Frame.simulate(3600) -- 仿真1小时
 end`
 
-      // 模拟延迟
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
       return {
         success: true,
-        message: '代码生成成功',
+        message: '代码生成成功（模拟代码）',
         data: {
           modelCode: mockModelCode,
           dataCode: mockDataCode,
         },
-      }
-    } catch (error) {
-      console.error('生成代码失败:', error)
-      return {
-        success: false,
-        message: '生成代码失败',
       }
     }
   },

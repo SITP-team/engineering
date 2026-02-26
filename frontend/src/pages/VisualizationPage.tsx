@@ -4,6 +4,7 @@ import { ArrowLeftOutlined, CheckOutlined, EditOutlined, CodeOutlined } from '@a
 import { useNavigate } from 'react-router-dom'
 import ProductionLineGraph from '../components/visualization/ProductionLineGraph'
 import { GraphData, Node } from '../types'
+import { apiService } from '../services/api_simple'
 
 const VisualizationPage = () => {
   const navigate = useNavigate()
@@ -32,14 +33,37 @@ const VisualizationPage = () => {
     setSelectedNode(node)
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    if (!graphData) {
+      message.error('没有可用的图数据')
+      return
+    }
+    
     setLoading(true)
-    // 模拟API调用
-    setTimeout(() => {
-      message.success('模型确认成功！正在生成代码...')
+    
+    try {
+      // 调用真实API生成代码
+      const response = await apiService.confirmAndGenerateCode(graphData)
+      
+      if (response.success && response.data) {
+        // 保存生成的代码到localStorage，供CodeGenerationPage使用
+        localStorage.setItem('generatedCode', JSON.stringify({
+          modelCode: response.data.modelCode,
+          dataCode: response.data.dataCode,
+          timestamp: new Date().toISOString()
+        }))
+        
+        message.success('模型确认成功！代码已生成。')
+        navigate('/code-generation')
+      } else {
+        message.error(response.message || '生成代码失败')
+      }
+    } catch (error) {
+      console.error('生成代码时出错:', error)
+      message.error('生成代码时发生错误，请稍后重试')
+    } finally {
       setLoading(false)
-      navigate('/code-generation')
-    }, 1000)
+    }
   }
 
   const handleEdit = () => {

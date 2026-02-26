@@ -2,11 +2,10 @@ import { useState } from 'react'
 import { Card, Row, Col, Button, Input, Form, message, Steps, Typography } from 'antd'
 import { SendOutlined, EyeOutlined, CodeOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { generateGraphFromText } from '../services/api'
+import { generateGraphFromText } from '../services/api_simple'
 
 const { TextArea } = Input
 const { Title, Paragraph } = Typography
-const { Step } = Steps
 
 const HomePage = () => {
   const [form] = Form.useForm()

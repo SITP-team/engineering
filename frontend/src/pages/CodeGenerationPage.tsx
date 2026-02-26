@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, Row, Col, Button, Space, message, Tabs, Typography, Alert, Descriptions } from 'antd'
-import { DownloadOutlined, CopyOutlined, CheckOutlined, HomeOutlined, EyeOutlined } from '@ant-design/icons'
+import { DownloadOutlined, CopyOutlined, HomeOutlined, EyeOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { confirmAndGenerateCode } from '../services/api'
 
 const { Title, Paragraph, Text } = Typography
 const { TabPane } = Tabs
@@ -18,36 +17,34 @@ const CodeGenerationPage = () => {
   const [generatedCode, setGeneratedCode] = useState<GeneratedCode | null>(null)
   const [activeTab, setActiveTab] = useState('model')
 
-  // 生成代码
+  // 加载已生成的代码
   useEffect(() => {
-    const generateCode = async () => {
+    const loadGeneratedCode = () => {
       setLoading(true)
       try {
-        const savedData = localStorage.getItem('graphData')
-        if (!savedData) {
-          message.error('没有找到生产线数据')
-          navigate('/')
+        const savedCode = localStorage.getItem('generatedCode')
+        if (!savedCode) {
+          message.error('没有找到已生成的代码，请先确认模型')
+          navigate('/visualization')
           return
         }
 
-        const graphData = JSON.parse(savedData)
-        const result = await confirmAndGenerateCode(graphData)
-
-        if (result.success && result.data) {
-          setGeneratedCode(result.data)
-          message.success('代码生成成功！')
-        } else {
-          message.error(result.message || '代码生成失败')
-        }
+        const parsedCode = JSON.parse(savedCode)
+        setGeneratedCode({
+          modelCode: parsedCode.modelCode,
+          dataCode: parsedCode.dataCode
+        })
+        message.success('代码加载成功！')
       } catch (error) {
-        console.error('生成代码失败:', error)
-        message.error('生成代码失败')
+        console.error('加载代码失败:', error)
+        message.error('加载代码失败，请重新生成')
+        navigate('/visualization')
       } finally {
         setLoading(false)
       }
     }
 
-    generateCode()
+    loadGeneratedCode()
   }, [navigate])
 
   // 复制代码到剪贴板

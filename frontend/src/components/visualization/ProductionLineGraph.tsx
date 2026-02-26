@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 import { Card, Button, Modal, Descriptions, Tag, Space } from 'antd'
 import { EditOutlined, SaveOutlined, EyeOutlined } from '@ant-design/icons'
-import { GraphData, Node, NODE_STYLES, NodeType } from '../../types'
+import { GraphData, Node, NODE_STYLES } from '../../types'
 
 interface ProductionLineGraphProps {
   data: GraphData
@@ -33,13 +33,19 @@ const ProductionLineGraph: React.FC<ProductionLineGraphProps> = ({
 
     const g = svg.append('g')
 
+    // 转换边数据格式：从 {from, to} 转换为 {source, target}
+    const d3Edges = graphData.edges.map(edge => ({
+      source: edge.from,
+      target: edge.to
+    }))
+
     // 创建力导向图模拟
     const simulation = d3
       .forceSimulation(graphData.nodes as any)
       .force(
         'link',
         d3
-          .forceLink(graphData.edges)
+          .forceLink(d3Edges)
           .id((d: any) => d.name)
           .distance(100)
       )
@@ -73,7 +79,7 @@ const ProductionLineGraph: React.FC<ProductionLineGraphProps> = ({
           .on('drag', dragged)
           .on('end', dragended)
       )
-      .on('click', (event, d) => {
+      .on('click', (_event, d) => {
         setSelectedNode(d)
         if (onNodeClick) onNodeClick(d)
         setIsModalVisible(true)
