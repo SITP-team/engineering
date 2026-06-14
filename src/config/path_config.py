@@ -44,5 +44,5 @@ PLANT_SIM_PATHS = [
 ]
 
 # API配置
-API_URL = "https://api.deepseek.com/v1/chat/completions"
-API_KEY = "sk-e9974aad1f594c65a14cca3b48c8dea2"  # DeepSeek API密钥
+API_URL = 
+API_KEY =   # DeepSeek API密钥
